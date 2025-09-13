@@ -16,6 +16,9 @@ dependencies {
 	implementation 'org.mybatis:mybatis:3.5.16'
 	implementation 'org.mybatis:mybatis-guice:3.17'
 	implementation 'org.slf4j:slf4j-api:2.0.16'
+	implementation 'io.netty:netty-transport:4.1.115.Final'
+	implementation 'io.netty:netty-handler:4.1.115.Final'
+	implementation 'io.netty:netty-codec-http:4.1.115.Final'
 	runtimeOnly 'org.slf4j:slf4j-simple:2.0.16'
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
 }
