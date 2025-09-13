@@ -1,8 +1,10 @@
 package tutorial.trucksDispatchGuiceMybatis.services.events.out;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public sealed interface OutputEvent permits
         AssignmentCreatedOutputEvent,
         TruckWaitsOutputEvent,
         ShipmentWaitsOutputEvent {
-    String getType();
+    @JsonProperty("type") String getType();
 }

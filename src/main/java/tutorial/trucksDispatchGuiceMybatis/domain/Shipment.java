@@ -1,6 +1,10 @@
 package tutorial.trucksDispatchGuiceMybatis.domain;
 
-public record Shipment(String name, float weight) {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public record Shipment(
+        @JsonProperty("name") String name,
+        @JsonProperty("weight") float weight) {
     @Override
     public String toString() {
         return "Shipment{" +

@@ -47,7 +47,7 @@ public class DistributionController extends ControllerImpl {
     private void handlePostRequest(ChannelHandlerContext ctx, FullHttpRequest httpRequest) {
         switch (httpRequest.uri()) {
             case "/td/shipment" -> handleAddShipment(ctx, httpRequest);
-            case "td/truck" -> handleAddTruck(ctx, httpRequest);
+            case "/td/truck" -> handleAddTruck(ctx, httpRequest);
             default -> returnNotFound(ctx);
         }
     }
@@ -58,7 +58,7 @@ public class DistributionController extends ControllerImpl {
             final OutputEvent outputEvent = distributor.onShipmentArrived(inputEvent);
             returnObject(ctx, outputEvent);
         } catch (JsonProcessingException e) {
-            LOG.error(e.getMessage());
+            LOG.error(e.getMessage(), e);
             returnBadRequest(ctx);
         }
     }
@@ -69,7 +69,7 @@ public class DistributionController extends ControllerImpl {
             final OutputEvent outputEvent = distributor.onTruckArrived(inputEvent);
             returnObject(ctx, outputEvent);
         } catch (JsonProcessingException e) {
-            LOG.error(e.getMessage());
+            LOG.error(e.getMessage(), e);
             returnBadRequest(ctx);
         }
     }

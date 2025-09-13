@@ -1,6 +1,11 @@
 package tutorial.trucksDispatchGuiceMybatis.domain;
 
-public record Assignment(Truck truck, Shipment shipment) {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public record Assignment(
+        @JsonProperty("truck") Truck truck,
+        @JsonProperty("shipment") Shipment shipment) {
+    
     @Override
     public String toString() {
         return "Assignment{" +

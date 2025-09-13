@@ -2,6 +2,7 @@ package tutorial.trucksDispatchGuiceMybatis.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -15,6 +16,10 @@ import io.netty.util.CharsetUtil;
 public abstract class ControllerImpl extends SimpleChannelInboundHandler<FullHttpRequest> {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public ControllerImpl() {
+        objectMapper.registerModule(new ParameterNamesModule());
+    }
 
     protected <T> T readObject(ByteBuf buffer, Class<T> clazz) throws JsonProcessingException {
         return objectMapper.readValue(buffer.toString(CharsetUtil.UTF_8), clazz);

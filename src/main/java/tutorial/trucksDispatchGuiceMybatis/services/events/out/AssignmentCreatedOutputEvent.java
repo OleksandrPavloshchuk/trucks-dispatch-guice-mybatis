@@ -1,8 +1,11 @@
 package tutorial.trucksDispatchGuiceMybatis.services.events.out;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import tutorial.trucksDispatchGuiceMybatis.domain.Assignment;
 
-public record AssignmentCreatedOutputEvent(Assignment assignment) implements OutputEvent {
+public record AssignmentCreatedOutputEvent(
+        @JsonProperty("assignment") Assignment assignment
+) implements OutputEvent {
     @Override
     public String toString() {
         return "AssignmentCreatedOutputEvent{" +

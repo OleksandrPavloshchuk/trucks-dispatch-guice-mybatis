@@ -1,8 +1,11 @@
 package tutorial.trucksDispatchGuiceMybatis.services.events.in;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import tutorial.trucksDispatchGuiceMybatis.domain.Shipment;
 
-public record ShipmentArrivedInputEvent(Shipment shipment) implements InputEvent {
+public record ShipmentArrivedInputEvent(
+        @JsonProperty("shipment") Shipment shipment
+) implements InputEvent {
     @Override
     public String toString() {
         return "ShipmentArrivedEvent{" +
