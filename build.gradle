@@ -1,0 +1,29 @@
+plugins {
+	id 'java'
+	id 'application'	
+}
+
+group = 'trucks-dispatch-guice-mybatis'
+version = '1.0.0-SNAPSHOT'
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'com.google.inject:guice:7.0.0'
+	implementation 'org.mybatis:mybatis:3.5.16'
+	implementation 'org.mybatis:mybatis-guice:3.17'
+	implementation 'org.slf4j:slf4j-api:2.0.16'
+	runtimeOnly 'org.slf4j:slf4j-simple:2.0.16'
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
+}
+
+application {
+	mainClass = 'tutorial.trucksDispatchGuiceMybatis.Application'
+}
+
+test {
+	useJUnitPlatform()
+}
