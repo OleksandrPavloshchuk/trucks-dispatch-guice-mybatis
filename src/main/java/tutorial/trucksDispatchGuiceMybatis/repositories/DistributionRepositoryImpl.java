@@ -1,12 +1,14 @@
 package tutorial.trucksDispatchGuiceMybatis.repositories;
 
+import com.google.inject.Singleton;
 import tutorial.trucksDispatchGuiceMybatis.domain.Shipment;
 import tutorial.trucksDispatchGuiceMybatis.domain.Truck;
-import tutorial.trucksDispatchGuiceMybatis.services.event.out.OutputEvent;
+import tutorial.trucksDispatchGuiceMybatis.services.events.out.OutputEvent;
 
 import java.util.Optional;
 
 // TODO add support of MyBatis here
+@Singleton
 public class DistributionRepositoryImpl implements DistributionRepository {
 
     @Override

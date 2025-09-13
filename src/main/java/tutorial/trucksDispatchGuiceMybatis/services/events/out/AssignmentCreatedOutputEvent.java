@@ -1,4 +1,4 @@
-package tutorial.trucksDispatchGuiceMybatis.services.event.out;
+package tutorial.trucksDispatchGuiceMybatis.services.events.out;
 
 import tutorial.trucksDispatchGuiceMybatis.domain.Assignment;
 

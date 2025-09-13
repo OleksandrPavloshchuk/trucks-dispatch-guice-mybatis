@@ -1,4 +1,4 @@
-package tutorial.trucksDispatchGuiceMybatis.services.event.out;
+package tutorial.trucksDispatchGuiceMybatis.services.events.out;
 
 public record TruckWaitsOutputEvent() implements OutputEvent {
 

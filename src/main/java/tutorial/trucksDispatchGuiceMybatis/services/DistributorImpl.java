@@ -1,17 +1,19 @@
 package tutorial.trucksDispatchGuiceMybatis.services;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tutorial.trucksDispatchGuiceMybatis.domain.Shipment;
 import tutorial.trucksDispatchGuiceMybatis.domain.Truck;
 import tutorial.trucksDispatchGuiceMybatis.repositories.DistributionRepository;
-import tutorial.trucksDispatchGuiceMybatis.services.event.in.ShipmentArrivedInputEvent;
-import tutorial.trucksDispatchGuiceMybatis.services.event.in.TruckArrivedInputEvent;
-import tutorial.trucksDispatchGuiceMybatis.services.event.out.OutputEvent;
-import tutorial.trucksDispatchGuiceMybatis.services.event.out.ShipmentWaitsOutputEvent;
-import tutorial.trucksDispatchGuiceMybatis.services.event.out.TruckWaitsOutputEvent;
+import tutorial.trucksDispatchGuiceMybatis.services.events.in.ShipmentArrivedInputEvent;
+import tutorial.trucksDispatchGuiceMybatis.services.events.in.TruckArrivedInputEvent;
+import tutorial.trucksDispatchGuiceMybatis.services.events.out.OutputEvent;
+import tutorial.trucksDispatchGuiceMybatis.services.events.out.ShipmentWaitsOutputEvent;
+import tutorial.trucksDispatchGuiceMybatis.services.events.out.TruckWaitsOutputEvent;
 
+@Singleton
 public class DistributorImpl implements Distributor {
 
     private static final Logger LOG = LoggerFactory.getLogger(DistributorImpl.class);

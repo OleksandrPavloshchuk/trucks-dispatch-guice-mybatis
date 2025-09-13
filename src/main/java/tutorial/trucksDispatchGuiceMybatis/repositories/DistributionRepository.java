@@ -2,7 +2,7 @@ package tutorial.trucksDispatchGuiceMybatis.repositories;
 
 import tutorial.trucksDispatchGuiceMybatis.domain.Shipment;
 import tutorial.trucksDispatchGuiceMybatis.domain.Truck;
-import tutorial.trucksDispatchGuiceMybatis.services.event.out.OutputEvent;
+import tutorial.trucksDispatchGuiceMybatis.services.events.out.OutputEvent;
 
 import java.util.Optional;
 
