@@ -20,7 +20,7 @@ public abstract class ControllerImpl extends SimpleChannelInboundHandler<FullHtt
         return objectMapper.readValue(buffer.toString(CharsetUtil.UTF_8), clazz);
     }
 
-    protected void returnOK(ChannelHandlerContext ctx, Object obj) throws JsonProcessingException {
+    protected void returnObject(ChannelHandlerContext ctx, Object obj) throws JsonProcessingException {
         final String jsonStr = objectMapper.writeValueAsString(obj);
         final FullHttpResponse response = new DefaultFullHttpResponse(
                 HttpVersion.HTTP_1_1,
@@ -28,6 +28,16 @@ public abstract class ControllerImpl extends SimpleChannelInboundHandler<FullHtt
                 Unpooled.copiedBuffer(jsonStr, CharsetUtil.UTF_8)
         );
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json; charset=UTF-8");
+        ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+    }
+
+    protected void returnText(ChannelHandlerContext ctx, String str) {
+        final FullHttpResponse response = new DefaultFullHttpResponse(
+                HttpVersion.HTTP_1_1,
+                HttpResponseStatus.OK,
+                Unpooled.copiedBuffer(str, CharsetUtil.UTF_8)
+        );
+        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain; charset=UTF-8");
         ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
     }
 

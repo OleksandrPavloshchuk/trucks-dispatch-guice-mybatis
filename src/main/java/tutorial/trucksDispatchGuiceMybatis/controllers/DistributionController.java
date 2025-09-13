@@ -3,11 +3,9 @@ package tutorial.trucksDispatchGuiceMybatis.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.*;
-import io.netty.util.CharsetUtil;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tutorial.trucksDispatchGuiceMybatis.services.Distributor;
@@ -31,37 +29,26 @@ public class DistributionController extends ControllerImpl {
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest httpRequest) {
         final HttpMethod method = httpRequest.method();
         if (HttpMethod.GET.equals(method)) {
-            handleGet(ctx, httpRequest);
+            handleGetRequest(ctx, httpRequest);
         } else if (HttpMethod.POST.equals(method)) {
-            handlePost(ctx, httpRequest);
+            handlePostRequest(ctx, httpRequest);
         } else {
             returnNotFound(ctx);
         }
     }
 
-    private void handleGet(ChannelHandlerContext ctx, FullHttpRequest httpRequest) {
-        if ("/hello".equals(httpRequest.uri())) {
-            // TODO remade this to something like "health":
-            FullHttpResponse response = new DefaultFullHttpResponse(
-                    HttpVersion.HTTP_1_1,
-                    HttpResponseStatus.OK,
-                    Unpooled.copiedBuffer("Hello from Netty!", CharsetUtil.UTF_8)
-            );
-            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain; charset=UTF-8");
-            ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
-        } else {
-            returnNotFound(ctx);
+    private void handleGetRequest(ChannelHandlerContext ctx, FullHttpRequest httpRequest) {
+        switch (httpRequest.uri()) {
+            case "/hello" -> returnText(ctx, "Hello from Netty!");
+            default -> returnNotFound(ctx);
         }
     }
 
-    private void handlePost(ChannelHandlerContext ctx, FullHttpRequest httpRequest) {
-        final String uri = httpRequest.uri();
-        if ("/td/shipment".equals(uri)) {
-            handleAddShipment(ctx, httpRequest);
-        } else if ("/td/truck".equals(uri)) {
-            handleAddTruck(ctx, httpRequest);
-        } else {
-            returnNotFound(ctx);
+    private void handlePostRequest(ChannelHandlerContext ctx, FullHttpRequest httpRequest) {
+        switch (httpRequest.uri()) {
+            case "/td/shipment" -> handleAddShipment(ctx, httpRequest);
+            case "td/truck" -> handleAddTruck(ctx, httpRequest);
+            default -> returnNotFound(ctx);
         }
     }
 
@@ -69,7 +56,7 @@ public class DistributionController extends ControllerImpl {
         try {
             final ShipmentArrivedInputEvent inputEvent = readObject(httpRequest.content(), ShipmentArrivedInputEvent.class);
             final OutputEvent outputEvent = distributor.onShipmentArrived(inputEvent);
-            returnOK(ctx, outputEvent);
+            returnObject(ctx, outputEvent);
         } catch (JsonProcessingException e) {
             LOG.error(e.getMessage());
             returnBadRequest(ctx);
@@ -80,7 +67,7 @@ public class DistributionController extends ControllerImpl {
         try {
             final TruckArrivedInputEvent inputEvent = readObject(httpRequest.content(), TruckArrivedInputEvent.class);
             final OutputEvent outputEvent = distributor.onTruckArrived(inputEvent);
-            returnOK(ctx, outputEvent);
+            returnObject(ctx, outputEvent);
         } catch (JsonProcessingException e) {
             LOG.error(e.getMessage());
             returnBadRequest(ctx);
