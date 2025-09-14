@@ -1,24 +1,16 @@
-version: '3.8'
-
-# TODO move to postgres
 services:
-  mariadb:
-    image: mariadb:latest
-    container_name: mariadb-container
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpasswd
-      MYSQL_DATABASE: dispatcher
-    ports:
-      - "3306:3306"
-    volumes:
-      - mariadb_data:/var/lib/mysql
-    networks:
-      - tutorial-net
+  db:
+    image: postgres:16
+    container_name: postgres-td
     restart: always
+    environment:
+      POSTGRES_USER: td
+      POSTGRES_PASSWORD: tdpass
+      POSTGRES_DB: trucksdispatch
+    ports:
+      - "15432:5432"   # out 15432 → inside 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
-  mariadb_data:
-
-networks:
-  tutorial-net:
-    driver: bridge
+  postgres_data:
