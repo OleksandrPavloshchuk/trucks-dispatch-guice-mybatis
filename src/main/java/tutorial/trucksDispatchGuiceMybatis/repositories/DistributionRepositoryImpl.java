@@ -1,38 +1,70 @@
 package tutorial.trucksDispatchGuiceMybatis.repositories;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import tutorial.trucksDispatchGuiceMybatis.domain.Assignment;
 import tutorial.trucksDispatchGuiceMybatis.domain.Shipment;
 import tutorial.trucksDispatchGuiceMybatis.domain.Truck;
+import tutorial.trucksDispatchGuiceMybatis.services.events.out.AssignmentCreatedOutputEvent;
 import tutorial.trucksDispatchGuiceMybatis.services.events.out.OutputEvent;
 
+import java.util.Map;
 import java.util.Optional;
 
-// TODO add support of MyBatis here
 @Singleton
 public class DistributionRepositoryImpl implements DistributionRepository {
 
+    private static final String MAPPER_NAMESPACE =
+            "tutorial.trucksDispatchGuiceMybatis.repositories.DistributionRepositoryImpl";
+
+    private final SqlSessionFactory sqlSessionFactory;
+
+    @Inject
+    public DistributionRepositoryImpl(SqlSessionFactory sqlSessionFactory) {
+        this.sqlSessionFactory = sqlSessionFactory;
+    }
+
     @Override
     public void registerUnassignedTruck(Truck truck) {
+        insert("registerUnassignedTruck", truck);
     }
 
     @Override
     public void registerUnassignedShipment(Shipment shipment) {
+        insert("registerUnassignedShipment", shipment);
     }
 
     @Override
     public OutputEvent createAssignment(Truck truck, Shipment shipment) {
-        return null;
+        insert("createAssignment",
+                Map.of("truck", truck, "shipment", shipment));
+        return new AssignmentCreatedOutputEvent(
+            new Assignment(truck, shipment)
+        );
     }
 
     @Override
     public Optional<Truck> getLightestTrackForWeight(double weight) {
-        return Optional.empty();
+        return selectOne("getLightestTrackForWeight", Map.of("weight", weight));
     }
 
     @Override
     public Optional<Shipment> getHeaviestShipmentForCapacity(double capacity) {
-        return Optional.empty();
+        return selectOne("getHeaviestShipmentForCapacity", Map.of("capacity", capacity));
     }
 
+    private <T> void insert(String sqlId, T obj) {
+        try (SqlSession session = sqlSessionFactory.openSession(true)) {
+            session.insert(MAPPER_NAMESPACE + "." + sqlId, obj);
+        }
+    }
+
+    private <T> Optional<T> selectOne(String sqlId, Map<String,Object> params) {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            return Optional.ofNullable(session.selectOne(MAPPER_NAMESPACE + "." + sqlId, params));
+        }
+    }
 
 }

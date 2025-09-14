@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="tutorial.trucksDispatchGuiceMybatis.repositories.DistributionRepositoryImpl">
+
+    <insert id="registerUnassignedShipment"
+            parameterType="tutorial.trucksDispatchGuiceMybatis.domain.Shipment">
+        INSERT INTO shipments(name, weight)
+        VALUES (#{name}, #{weight})
+    </insert>
+
+    <insert id="registerUnassignedTruck"
+            parameterType="tutorial.trucksDispatchGuiceMybatis.domain.Truck">
+        INSERT INTO trucks(name, capacity)
+        VALUES (#{name}, #{capacity})
+    </insert>
+
+    <insert id="createAssignment"
+            parameterType="map">
+        INSERT INTO assignments(truck_name, shipment_name)
+        VALUES (#{truck.name}, #{shipment.name})
+    </insert>
+
+    <select id="getLightestTrackForWeight"
+            parameterType="map"
+            resultType="tutorial.trucksDispatchGuiceMybatis.domain.Truck">
+        SELECT name, capacity
+        FROM trucks
+        WHERE capacity in (
+            SELECT min(capacity)
+            FROM trucks
+            WHERE capacity &gt;= #{weight}
+            AND name NOT IN (SELECT truck_name FROM assignments)
+        )
+    </select>
+
+    <select id="getHeaviestShipmentForCapacity"
+            parameterType="map"
+            resultType="tutorial.trucksDispatchGuiceMybatis.domain.Shipment">
+        SELECT name, weight
+        FROM shipments
+        WHERE weight in (
+            SELECT max(weight)
+            FROM shipments
+            WHERE weight &lt;= #{capacity}
+            AND name NOT IN (SELECT shipment_name FROM assignments)
+        )
+    </select>
+
+
+</mapper>
