@@ -39,7 +39,7 @@ public class DistributionController extends ControllerImpl {
 
     private void handleGetRequest(ChannelHandlerContext ctx, FullHttpRequest httpRequest) {
         switch (httpRequest.uri()) {
-            case "/hello" -> returnText(ctx, "Hello from Netty!");
+            case "/about" -> returnText(ctx, "Trucks distribution. Version 1.0.0-SNAPSHOT");
             default -> returnNotFound(ctx);
         }
     }
