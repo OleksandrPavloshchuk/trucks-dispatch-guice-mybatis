@@ -34,6 +34,7 @@
             WHERE capacity &gt;= #{weight}
             AND name NOT IN (SELECT truck_name FROM assignments)
         )
+        LIMIT 1
     </select>
 
     <select id="getHeaviestShipmentForCapacity"
@@ -47,6 +48,7 @@
             WHERE weight &lt;= #{capacity}
             AND name NOT IN (SELECT shipment_name FROM assignments)
         )
+        LIMIT 1
     </select>
 
 

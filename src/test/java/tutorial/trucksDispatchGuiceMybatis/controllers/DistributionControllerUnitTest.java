@@ -16,7 +16,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import tutorial.trucksDispatchGuiceMybatis.domain.Assignment;
+import tutorial.trucksDispatchGuiceMybatis.domain.Shipment;
+import tutorial.trucksDispatchGuiceMybatis.domain.Truck;
 import tutorial.trucksDispatchGuiceMybatis.services.Distributor;
+import tutorial.trucksDispatchGuiceMybatis.services.events.out.AssignmentCreatedOutputEvent;
 import tutorial.trucksDispatchGuiceMybatis.services.events.out.ShipmentWaitsOutputEvent;
 import tutorial.trucksDispatchGuiceMybatis.services.events.out.TruckWaitsOutputEvent;
 
@@ -150,6 +154,27 @@ public class DistributionControllerUnitTest {
         verify(ctx).writeAndFlush(argumentCaptor.capture());
         final FullHttpResponse fullHttpResponse = argumentCaptor.getValue();
         Assertions.assertEquals(400, fullHttpResponse.status().code());
+    }
+
+    @Test
+    public void postOK_addTruck_assignmentCreated() {
+        doReturn(HttpMethod.POST).when(fullHttpRequest).method();
+        doReturn("/td/truck").when(fullHttpRequest).uri();
+        doReturn("{\"truck\":{\"name\":\"t1\",\"capacity\":0.1}}").when(byteBuf).toString(CharsetUtil.UTF_8);
+        doReturn(byteBuf).when(fullHttpRequest).content();
+        doReturn(new AssignmentCreatedOutputEvent(
+                new Assignment(
+                        new Truck("1", 2),
+                        new Shipment("3", 4)
+                )
+        )).when(distributor).onTruckArrived(any());
+        distributionController.channelRead0(ctx, fullHttpRequest);
+        final ArgumentCaptor<FullHttpResponse> argumentCaptor = ArgumentCaptor.forClass(FullHttpResponse.class);
+        verify(ctx).writeAndFlush(argumentCaptor.capture());
+        final FullHttpResponse fullHttpResponse = argumentCaptor.getValue();
+        Assertions.assertEquals(200, fullHttpResponse.status().code());
+        Assertions.assertEquals("application/json; charset=UTF-8", fullHttpResponse.headers().get(HttpHeaderNames.CONTENT_TYPE));
+        Assertions.assertEquals("{\"assignment\":{\"truck\":{\"name\":\"1\",\"capacity\":2.0},\"shipment\":{\"name\":\"3\",\"weight\":4.0}},\"type\":\"assignmentCreated\"}", fullHttpResponse.content().toString(CharsetUtil.UTF_8));
     }
 
     @Test

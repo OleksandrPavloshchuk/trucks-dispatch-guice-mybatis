@@ -15,17 +15,30 @@ public class HttpServer {
     private static final Logger LOG = LoggerFactory.getLogger(HttpServer.class);
 
     private final ChannelInboundHandler handler;
+    private final EventLoopGroupProvider eventLoopGroupProvider;
+    private final ServerBootstrapProvider serverBootstrapProvider;
+    private final HttpServerCodecProvider httpServerCodecProvider;
+    private final HttpObjectAggregatorProvider httpObjectAggregatorProvider;
 
-    public HttpServer(ChannelInboundHandler handler) {
+    public HttpServer(
+            ChannelInboundHandler handler,
+            EventLoopGroupProvider eventLoopGroupProvider,
+            ServerBootstrapProvider serverBootstrapProvider,
+            HttpServerCodecProvider httpServerCodecProvider,
+            HttpObjectAggregatorProvider httpObjectAggregatorProvider) {
         this.handler = handler;
+        this.eventLoopGroupProvider = eventLoopGroupProvider;
+        this.serverBootstrapProvider = serverBootstrapProvider;
+        this.httpServerCodecProvider = httpServerCodecProvider;
+        this.httpObjectAggregatorProvider = httpObjectAggregatorProvider;
     }
 
     public void start(int port) {
-        final EventLoopGroup bossEventLoopGroup = new NioEventLoopGroup(1);
-        final EventLoopGroup workerEventLoopGroup = new NioEventLoopGroup();
+        final EventLoopGroup bossEventLoopGroup = eventLoopGroupProvider.get(1);
+        final EventLoopGroup workerEventLoopGroup = eventLoopGroupProvider.get();
 
         try {
-            final ServerBootstrap serverBootstrap = new ServerBootstrap();
+            final ServerBootstrap serverBootstrap = serverBootstrapProvider.get();
             serverBootstrap.group(bossEventLoopGroup, workerEventLoopGroup)
                     .channel(NioServerSocketChannel.class)
                     .childHandler(createChannelInitializer());
@@ -47,10 +60,38 @@ public class HttpServer {
             @Override
             protected void initChannel(SocketChannel channel) {
                 final ChannelPipeline pipeline = channel.pipeline();
-                pipeline.addLast(new HttpServerCodec());
-                pipeline.addLast(new HttpObjectAggregator(65536));
+                pipeline.addLast(httpServerCodecProvider.get());
+                pipeline.addLast(httpObjectAggregatorProvider.get());
                 pipeline.addLast(handler);
             }
         };
+    }
+
+    public static class EventLoopGroupProvider {
+        public EventLoopGroup get() {
+            return new NioEventLoopGroup();
+        }
+
+        public EventLoopGroup get(int count) {
+            return new NioEventLoopGroup(count);
+        }
+    }
+
+    public static class ServerBootstrapProvider {
+        public ServerBootstrap get() {
+            return new ServerBootstrap();
+        }
+    }
+
+    public static class HttpServerCodecProvider {
+        public HttpServerCodec get() {
+            return new HttpServerCodec();
+        }
+    }
+
+    public static class HttpObjectAggregatorProvider {
+        public HttpObjectAggregator get() {
+            return new HttpObjectAggregator(65536);
+        }
     }
 }

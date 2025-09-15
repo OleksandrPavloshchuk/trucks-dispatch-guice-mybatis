@@ -10,8 +10,14 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import tutorial.trucksDispatchGuiceMybatis.domain.Assignment;
 import tutorial.trucksDispatchGuiceMybatis.domain.Shipment;
 import tutorial.trucksDispatchGuiceMybatis.domain.Truck;
+import tutorial.trucksDispatchGuiceMybatis.services.events.out.AssignmentCreatedOutputEvent;
+import tutorial.trucksDispatchGuiceMybatis.services.events.out.OutputEvent;
+
+import java.util.Map;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
@@ -59,6 +65,42 @@ public class DistributionRepositoryImplUnitTest {
                 shipment);
     }
 
+    @Test
+    public void getLightestTrackForWeight() {
+        final Truck truck = new Truck("truck-1", 7.2f);
+        doReturn(truck).when(sqlSession).selectOne(any(), any());
+        final Optional<Truck> actualOpt = distributionRepository.getLightestTrackForWeight(6.0f);
+        assertSelectOneCalled(
+                "tutorial.trucksDispatchGuiceMybatis.repositories.DistributionRepositoryImpl.getLightestTrackForWeight",
+                Map.of("weight", 6.0));
+        Assertions.assertEquals(truck, actualOpt.get());
+    }
+
+    @Test
+    public void getHeaviestShipmentForCapacity() {
+        final Shipment shipment = new Shipment("shipment-2", 18.0f);
+        doReturn(shipment).when(sqlSession).selectOne(any(), any());
+        final Optional<Shipment> actualOpt = distributionRepository.getHeaviestShipmentForCapacity(18.0f);
+        assertSelectOneCalled(
+                "tutorial.trucksDispatchGuiceMybatis.repositories.DistributionRepositoryImpl.getHeaviestShipmentForCapacity",
+                Map.of("capacity", 18.0));
+        Assertions.assertEquals(shipment, actualOpt.get());
+    }
+
+    @Test
+    public void createAssignment() {
+        final Truck truck = new Truck("t-3", 11);
+        final Shipment shipment = new Shipment("s-4", 10.9);
+        OutputEvent actualRaw = distributionRepository.createAssignment(truck, shipment);
+        assertInsertCalled(
+                "tutorial.trucksDispatchGuiceMybatis.repositories.DistributionRepositoryImpl.createAssignment",
+                Map.of("truck", truck, "shipment", shipment));
+        Assertions.assertInstanceOf(AssignmentCreatedOutputEvent.class, actualRaw);
+        final AssignmentCreatedOutputEvent actual = (AssignmentCreatedOutputEvent) actualRaw;
+        Assertions.assertEquals(shipment, actual.assignment().shipment());
+        Assertions.assertEquals(truck, actual.assignment().truck());
+    }
+
     private void assertInsertCalled(String expectedSqlId, Object expectedParam) {
 
         final ArgumentCaptor<Object> sqlParamCaptor = ArgumentCaptor.forClass(Object.class);
@@ -70,5 +112,18 @@ public class DistributionRepositoryImplUnitTest {
         Assertions.assertEquals(expectedSqlId, sqlIdCaptor.getValue());
         Assertions.assertEquals(expectedParam, sqlParamCaptor.getValue());
     }
+
+    private void assertSelectOneCalled(String expectedSqlId, Object expectedParam) {
+
+        final ArgumentCaptor<Object> sqlParamCaptor = ArgumentCaptor.forClass(Object.class);
+        final ArgumentCaptor<String> sqlIdCaptor = ArgumentCaptor.forClass(String.class);
+
+        verify(sqlSessionFactory).openSession();
+        verify(sqlSession).selectOne(sqlIdCaptor.capture(), sqlParamCaptor.capture());
+
+        Assertions.assertEquals(expectedSqlId, sqlIdCaptor.getValue());
+        Assertions.assertEquals(expectedParam, sqlParamCaptor.getValue());
+    }
+
 
 }

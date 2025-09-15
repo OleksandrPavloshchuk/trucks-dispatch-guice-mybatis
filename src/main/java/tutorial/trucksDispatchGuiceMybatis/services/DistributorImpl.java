@@ -47,7 +47,7 @@ public class DistributorImpl implements Distributor {
         distributionRepository.registerUnassignedShipment(shipment);
         return distributionRepository.getLightestTrackForWeight(shipment.weight())
                 .stream()
-                .map(truck -> distributionRepository.createAssignment(truck,shipment))
+                .map(truck -> distributionRepository.createAssignment(truck, shipment))
                 .findFirst()
                 .orElse(SHIPMENT_WAITS);
     }

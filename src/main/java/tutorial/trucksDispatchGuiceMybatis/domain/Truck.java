@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record Truck(
         @JsonProperty("name") String name,
-        @JsonProperty("capacity") float capacity) {
+        @JsonProperty("capacity") double capacity) {
 
     @Override
     public String toString() {

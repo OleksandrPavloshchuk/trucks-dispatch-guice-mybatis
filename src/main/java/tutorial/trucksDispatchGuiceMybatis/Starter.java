@@ -10,7 +10,12 @@ public class Starter {
     public static void main(String[] args) {
         final Injector injector = Guice.createInjector(new ApplicationModule());
 
-        new HttpServer(injector.getInstance(DistributionController.class))
-                .start(8080);
+        new HttpServer(
+                injector.getInstance(DistributionController.class),
+                new HttpServer.EventLoopGroupProvider(),
+                new HttpServer.ServerBootstrapProvider(),
+                new HttpServer.HttpServerCodecProvider(),
+                new HttpServer.HttpObjectAggregatorProvider()
+        ).start(8080);
     }
 }

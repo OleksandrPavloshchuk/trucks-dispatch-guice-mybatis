@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record Shipment(
         @JsonProperty("name") String name,
-        @JsonProperty("weight") float weight) {
+        @JsonProperty("weight") double weight) {
     @Override
     public String toString() {
         return "Shipment{" +
