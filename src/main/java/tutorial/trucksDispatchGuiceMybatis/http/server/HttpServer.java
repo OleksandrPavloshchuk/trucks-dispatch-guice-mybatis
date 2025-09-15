@@ -60,9 +60,9 @@ public class HttpServer {
             @Override
             protected void initChannel(SocketChannel channel) {
                 final ChannelPipeline pipeline = channel.pipeline();
-                pipeline.addLast(httpServerCodecProvider.get());
-                pipeline.addLast(httpObjectAggregatorProvider.get());
-                pipeline.addLast(handler);
+                pipeline.addLast("httpServerCodec", httpServerCodecProvider.get());
+                pipeline.addLast("httpObjectAggregator", httpObjectAggregatorProvider.get());
+                pipeline.addLast( "businessLayer", handler);
             }
         };
     }

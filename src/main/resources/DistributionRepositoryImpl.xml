@@ -7,48 +7,54 @@
 
     <insert id="registerUnassignedShipment"
             parameterType="tutorial.trucksDispatchGuiceMybatis.domain.Shipment">
+        <![CDATA[
         INSERT INTO shipments(name, weight)
         VALUES (#{name}, #{weight})
+        ]]>
     </insert>
 
     <insert id="registerUnassignedTruck"
             parameterType="tutorial.trucksDispatchGuiceMybatis.domain.Truck">
+        <![CDATA[
         INSERT INTO trucks(name, capacity)
         VALUES (#{name}, #{capacity})
+        ]]>
     </insert>
 
     <insert id="createAssignment"
             parameterType="map">
+        <![CDATA[
         INSERT INTO assignments(truck_name, shipment_name)
         VALUES (#{truck.name}, #{shipment.name})
+        ]]>
     </insert>
 
     <select id="getLightestTrackForWeight"
             parameterType="map"
             resultType="tutorial.trucksDispatchGuiceMybatis.domain.Truck">
+        <![CDATA[
         SELECT name, capacity
         FROM trucks
-        WHERE capacity in (
-            SELECT min(capacity)
-            FROM trucks
-            WHERE capacity &gt;= #{weight}
-            AND name NOT IN (SELECT truck_name FROM assignments)
-        )
+        WHERE capacity in (SELECT min(capacity)
+                           FROM trucks
+                           WHERE capacity >= #{weight}
+                             AND name NOT IN (SELECT truck_name FROM assignments))
         LIMIT 1
+        ]]>
     </select>
 
     <select id="getHeaviestShipmentForCapacity"
             parameterType="map"
             resultType="tutorial.trucksDispatchGuiceMybatis.domain.Shipment">
+        <![CDATA[
         SELECT name, weight
         FROM shipments
-        WHERE weight in (
-            SELECT max(weight)
-            FROM shipments
-            WHERE weight &lt;= #{capacity}
-            AND name NOT IN (SELECT shipment_name FROM assignments)
-        )
+        WHERE weight in (SELECT max(weight)
+                         FROM shipments
+                         WHERE weight <= #{capacity}
+                           AND name NOT IN (SELECT shipment_name FROM assignments))
         LIMIT 1
+        ]]>
     </select>
 
 
