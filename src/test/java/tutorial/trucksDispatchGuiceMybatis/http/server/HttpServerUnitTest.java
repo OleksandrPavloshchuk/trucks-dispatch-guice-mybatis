@@ -1,10 +1,7 @@
 package tutorial.trucksDispatchGuiceMybatis.http.server;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInboundHandler;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,6 +44,12 @@ public class HttpServerUnitTest {
     @Mock
     private EventLoopGroup bossEventLoopGroup;
 
+    @Mock
+    private HttpServer.LoggingHandlerProvider loggingHandlerProvider;
+
+    @Mock
+    private LoggingHandler loggingHandler;
+
     private AutoCloseable mocks;
 
     @BeforeEach
@@ -70,13 +73,15 @@ public class HttpServerUnitTest {
         doReturn(channelFuture).when(channelFuture).sync();
         doReturn(channel).when(channelFuture).channel();
         doReturn(channelFuture).when(channel).closeFuture();
+        doReturn(loggingHandler).when(loggingHandlerProvider).get();
         int port = 8080;
         new HttpServer(
                 handler,
                 eventLoopGroupProvider,
                 serverBootstrapProvider,
                 httpServerCodecProvider,
-                httpObjectAggregatorProvider
+                httpObjectAggregatorProvider,
+                loggingHandlerProvider
         ).start(port);
 
         verify(eventLoopGroupProvider).get();

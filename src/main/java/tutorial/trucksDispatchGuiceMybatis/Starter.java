@@ -15,7 +15,8 @@ public class Starter {
                 new HttpServer.EventLoopGroupProvider(),
                 new HttpServer.ServerBootstrapProvider(),
                 new HttpServer.HttpServerCodecProvider(),
-                new HttpServer.HttpObjectAggregatorProvider()
+                new HttpServer.HttpObjectAggregatorProvider(),
+                new HttpServer.LoggingHandlerProvider()
         ).start(8080);
     }
 }

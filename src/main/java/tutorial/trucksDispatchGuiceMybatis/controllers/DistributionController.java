@@ -55,9 +55,7 @@ public class DistributionController extends ControllerImpl {
     private void handleAddShipment(ChannelHandlerContext ctx, FullHttpRequest httpRequest) {
         try {
             final ShipmentArrivedInputEvent inputEvent = readObject(httpRequest.content(), ShipmentArrivedInputEvent.class);
-            logInput(inputEvent);
             final OutputEvent outputEvent = distributor.onShipmentArrived(inputEvent);
-            logResult(outputEvent);
             returnObject(ctx, outputEvent);
         } catch (JsonProcessingException e) {
             LOG.error(e.getMessage(), e);
@@ -68,9 +66,7 @@ public class DistributionController extends ControllerImpl {
     private void handleAddTruck(ChannelHandlerContext ctx, FullHttpRequest httpRequest) {
         try {
             final TruckArrivedInputEvent inputEvent = readObject(httpRequest.content(), TruckArrivedInputEvent.class);
-            logInput(inputEvent);
             final OutputEvent outputEvent = distributor.onTruckArrived(inputEvent);
-            logResult(outputEvent);
             returnObject(ctx, outputEvent);
         } catch (JsonProcessingException e) {
             LOG.error(e.getMessage(), e);
@@ -78,11 +74,4 @@ public class DistributionController extends ControllerImpl {
         }
     }
 
-    private void logInput(Object arg) {
-        LOG.info("arg: {}", arg);
-    }
-
-    private void logResult(Object result) {
-        LOG.info("result: {}", result);
-    }
 }

@@ -19,18 +19,21 @@ public class HttpServer {
     private final ServerBootstrapProvider serverBootstrapProvider;
     private final HttpServerCodecProvider httpServerCodecProvider;
     private final HttpObjectAggregatorProvider httpObjectAggregatorProvider;
+    private final LoggingHandlerProvider loggingHandlerProvider;
 
     public HttpServer(
             ChannelInboundHandler handler,
             EventLoopGroupProvider eventLoopGroupProvider,
             ServerBootstrapProvider serverBootstrapProvider,
             HttpServerCodecProvider httpServerCodecProvider,
-            HttpObjectAggregatorProvider httpObjectAggregatorProvider) {
+            HttpObjectAggregatorProvider httpObjectAggregatorProvider,
+            LoggingHandlerProvider loggingHandlerProvider) {
         this.handler = handler;
         this.eventLoopGroupProvider = eventLoopGroupProvider;
         this.serverBootstrapProvider = serverBootstrapProvider;
         this.httpServerCodecProvider = httpServerCodecProvider;
         this.httpObjectAggregatorProvider = httpObjectAggregatorProvider;
+        this.loggingHandlerProvider = loggingHandlerProvider;
     }
 
     public void start(int port) {
@@ -62,6 +65,7 @@ public class HttpServer {
                 final ChannelPipeline pipeline = channel.pipeline();
                 pipeline.addLast("httpServerCodec", httpServerCodecProvider.get());
                 pipeline.addLast("httpObjectAggregator", httpObjectAggregatorProvider.get());
+                pipeline.addLast("loggingHandler", loggingHandlerProvider.get());
                 pipeline.addLast( "businessLayer", handler);
             }
         };
@@ -92,6 +96,12 @@ public class HttpServer {
     public static class HttpObjectAggregatorProvider {
         public HttpObjectAggregator get() {
             return new HttpObjectAggregator(65536);
+        }
+    }
+
+    public static class LoggingHandlerProvider {
+        public LoggingHandler get() {
+            return new LoggingHandler();
         }
     }
 }
