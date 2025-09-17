@@ -66,7 +66,7 @@ public class HttpServer {
                 pipeline.addLast("httpServerCodec", httpServerCodecProvider.get());
                 pipeline.addLast("httpObjectAggregator", httpObjectAggregatorProvider.get());
                 pipeline.addLast("loggingHandler", loggingHandlerProvider.get());
-                pipeline.addLast( "businessLayer", handler);
+                pipeline.addLast("businessLayer", handler);
             }
         };
     }
