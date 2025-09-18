@@ -8,4 +8,4 @@ curl -v \
   -X POST \
   -H "Content-Type: application/json" \
   -d $JSON \
-  http://localhost:8080/td/shipment
+  http://localhost:8080/

@@ -68,6 +68,8 @@ public class HttpServerChannelInitializerUnitTest {
                 .addLast(eq("shipmentEndpoint"), eq(shipmentEndpoint));
         inOrder.verify(channelPipeline)
                 .addLast(eq("truckEndpoint"), eq(truckEndpoint));
+        inOrder.verify(channelPipeline)
+                .addLast(eq("end"), any(LastInChainHandler.class));
     }
 
 }

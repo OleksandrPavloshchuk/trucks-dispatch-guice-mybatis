@@ -43,5 +43,6 @@ public class HttpServerChannelInitializer extends ChannelInitializer<SocketChann
         pipeline.addLast("truckDeserializer", truckJsonDeserializeHandler);
         pipeline.addLast("shipmentEndpoint", shipmentEndpoint);
         pipeline.addLast("truckEndpoint", truckEndpoint);
+        pipeline.addLast("end", new LastInChainHandler());
     }
 }
