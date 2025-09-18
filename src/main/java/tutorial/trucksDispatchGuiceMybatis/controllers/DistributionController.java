@@ -14,6 +14,7 @@ import tutorial.trucksDispatchGuiceMybatis.services.events.in.TruckArrivedInputE
 import tutorial.trucksDispatchGuiceMybatis.services.events.out.OutputEvent;
 
 @Singleton
+@Deprecated
 public class DistributionController extends ControllerImpl {
 
     private static final Logger LOG = LoggerFactory.getLogger(DistributionController.class);

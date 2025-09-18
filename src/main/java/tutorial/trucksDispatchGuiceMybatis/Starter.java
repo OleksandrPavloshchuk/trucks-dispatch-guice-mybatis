@@ -2,7 +2,8 @@ package tutorial.trucksDispatchGuiceMybatis;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import tutorial.trucksDispatchGuiceMybatis.controllers.DistributionController;
+import tutorial.trucksDispatchGuiceMybatis.http.endpoints.ShipmentEndpoint;
+import tutorial.trucksDispatchGuiceMybatis.http.endpoints.TruckEndpoint;
 import tutorial.trucksDispatchGuiceMybatis.http.server.HttpServer;
 
 public class Starter {
@@ -11,7 +12,8 @@ public class Starter {
         final Injector injector = Guice.createInjector(new ApplicationModule());
 
         new HttpServer(
-                injector.getInstance(DistributionController.class),
+                injector.getInstance(ShipmentEndpoint.class),
+                injector.getInstance(TruckEndpoint.class),
                 new HttpServer.EventLoopGroupProvider(),
                 new HttpServer.ServerBootstrapProvider(),
                 new HttpServer.HttpServerCodecProvider(),

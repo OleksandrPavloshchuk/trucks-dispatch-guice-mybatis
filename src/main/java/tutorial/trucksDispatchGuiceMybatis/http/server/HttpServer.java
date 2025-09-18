@@ -9,12 +9,17 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tutorial.trucksDispatchGuiceMybatis.http.endpoints.ShipmentEndpoint;
+import tutorial.trucksDispatchGuiceMybatis.http.endpoints.TruckEndpoint;
+import tutorial.trucksDispatchGuiceMybatis.http.json.ShipmentJsonDeserializeHandler;
+import tutorial.trucksDispatchGuiceMybatis.http.json.TruckJsonDeserializeHandler;
 
 public class HttpServer {
 
     private static final Logger LOG = LoggerFactory.getLogger(HttpServer.class);
 
-    private final ChannelInboundHandler handler;
+    private final ShipmentEndpoint shipmentEndpoint;
+    private final TruckEndpoint truckEndpoint;
     private final EventLoopGroupProvider eventLoopGroupProvider;
     private final ServerBootstrapProvider serverBootstrapProvider;
     private final HttpServerCodecProvider httpServerCodecProvider;
@@ -22,13 +27,15 @@ public class HttpServer {
     private final LoggingHandlerProvider loggingHandlerProvider;
 
     public HttpServer(
-            ChannelInboundHandler handler,
+            ShipmentEndpoint shipmentEndpoint,
+            TruckEndpoint truckEndpoint,
             EventLoopGroupProvider eventLoopGroupProvider,
             ServerBootstrapProvider serverBootstrapProvider,
             HttpServerCodecProvider httpServerCodecProvider,
             HttpObjectAggregatorProvider httpObjectAggregatorProvider,
             LoggingHandlerProvider loggingHandlerProvider) {
-        this.handler = handler;
+        this.shipmentEndpoint = shipmentEndpoint;
+        this.truckEndpoint = truckEndpoint;
         this.eventLoopGroupProvider = eventLoopGroupProvider;
         this.serverBootstrapProvider = serverBootstrapProvider;
         this.httpServerCodecProvider = httpServerCodecProvider;
@@ -66,7 +73,10 @@ public class HttpServer {
                 pipeline.addLast("httpServerCodec", httpServerCodecProvider.get());
                 pipeline.addLast("httpObjectAggregator", httpObjectAggregatorProvider.get());
                 pipeline.addLast("loggingHandler", loggingHandlerProvider.get());
-                pipeline.addLast("businessLayer", handler);
+                pipeline.addLast("shipmentDeserializer", new ShipmentJsonDeserializeHandler());
+                pipeline.addLast("truckDeserializer", new TruckJsonDeserializeHandler());
+                pipeline.addLast("shipmentEndpoint", shipmentEndpoint);
+                pipeline.addLast("truckEndpoint", truckEndpoint);
             }
         };
     }

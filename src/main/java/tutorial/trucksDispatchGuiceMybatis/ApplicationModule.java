@@ -1,12 +1,13 @@
 package tutorial.trucksDispatchGuiceMybatis;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import io.netty.channel.ChannelInboundHandler;
+import com.google.inject.Singleton;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import tutorial.trucksDispatchGuiceMybatis.controllers.DistributionController;
 import tutorial.trucksDispatchGuiceMybatis.repositories.DistributionRepository;
 import tutorial.trucksDispatchGuiceMybatis.repositories.DistributionRepositoryImpl;
 import tutorial.trucksDispatchGuiceMybatis.services.Distributor;
@@ -21,7 +22,6 @@ public class ApplicationModule extends AbstractModule {
     protected void configure() {
         bind(Distributor.class).to(DistributorImpl.class);
         bind(DistributionRepository.class).to(DistributionRepositoryImpl.class);
-        bind(ChannelInboundHandler.class).to(DistributionController.class);
     }
 
     @Provides
@@ -29,5 +29,13 @@ public class ApplicationModule extends AbstractModule {
         try (Reader reader = Resources.getResourceAsReader("mybatis-config.xml")) {
             return new SqlSessionFactoryBuilder().build(reader);
         }
+    }
+
+    @Provides
+    @Singleton
+    public ObjectMapper objectMapper() {
+        final ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new ParameterNamesModule());
+        return mapper;
     }
 }
