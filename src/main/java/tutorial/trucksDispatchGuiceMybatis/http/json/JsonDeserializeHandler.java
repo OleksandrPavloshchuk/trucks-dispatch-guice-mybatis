@@ -32,6 +32,8 @@ public abstract class JsonDeserializeHandler<T> extends MessageToMessageDecoder<
                 final T obj = objectMapper.convertValue(jsonNode, clazz);
                 out.add(obj);
                 return;
+            } else {
+                throw new IllegalArgumentException("Invalid JSON format");
             }
         }
         out.add(request.retain());

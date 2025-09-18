@@ -9,14 +9,11 @@ import tutorial.trucksDispatchGuiceMybatis.services.events.in.ShipmentArrivedInp
 
 @Singleton
 @ChannelHandler.Sharable
-public class ShipmentEndpoint extends JsonEndpoint<ShipmentArrivedInputEvent> {
-
-    private final Distributor distributor;
+public class ShipmentEndpoint extends DistributorEndpoint<ShipmentArrivedInputEvent> {
 
     @Inject
     public ShipmentEndpoint(Distributor distributor, ObjectMapper objectMapper) {
-        super(objectMapper);
-        this.distributor = distributor;
+        super(distributor, objectMapper);
     }
 
     @Override
