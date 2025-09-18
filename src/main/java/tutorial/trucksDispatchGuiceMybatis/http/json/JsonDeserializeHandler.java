@@ -13,14 +13,15 @@ import java.util.List;
 
 public abstract class JsonDeserializeHandler<T> extends MessageToMessageDecoder<FullHttpRequest> {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
     private final Class<T> clazz;
 
     protected abstract boolean isJsonCorrect(JsonNode jsonNode);
 
-    public JsonDeserializeHandler(Class<T> clazz) {
+    public JsonDeserializeHandler(Class<T> clazz, ObjectMapper objectMapper) {
         objectMapper.registerModule(new ParameterNamesModule());
         this.clazz = clazz;
+        this.objectMapper = objectMapper;
     }
 
     @Override

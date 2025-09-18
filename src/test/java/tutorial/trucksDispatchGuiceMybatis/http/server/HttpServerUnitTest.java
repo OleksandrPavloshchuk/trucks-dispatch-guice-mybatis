@@ -1,16 +1,15 @@
 package tutorial.trucksDispatchGuiceMybatis.http.server;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInboundHandler;
+import io.netty.channel.EventLoopGroup;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.*;
 
 public class HttpServerUnitTest {
 
@@ -33,19 +32,13 @@ public class HttpServerUnitTest {
     private HttpServer.EventLoopGroupProvider eventLoopGroupProvider;
 
     @Mock
-    private HttpServer.HttpServerCodecProvider httpServerCodecProvider;
-
-    @Mock
-    private HttpServer.HttpObjectAggregatorProvider httpObjectAggregatorProvider;
-
-    @Mock
     private EventLoopGroup workerEventLoopGroup;
 
     @Mock
     private EventLoopGroup bossEventLoopGroup;
 
     @Mock
-    private HttpServer.LoggingHandlerProvider loggingHandlerProvider;
+    private HttpServerChannelInitializer httpServerChannelInitializer;
 
     @Mock
     private LoggingHandler loggingHandler;
