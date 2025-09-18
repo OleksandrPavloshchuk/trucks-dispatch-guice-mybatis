@@ -3,18 +3,26 @@ package tutorial.trucksDispatchGuiceMybatis.http.server;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInboundHandler;
+import io.netty.channel.DefaultChannelPromise;
 import io.netty.channel.EventLoopGroup;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
+
+import static com.google.inject.matcher.Matchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
 
 public class HttpServerUnitTest {
 
-    @Mock
-    private ChannelInboundHandler handler;
+    @Spy
+    private ServerBootstrap serverBootstrap;
 
     @Mock
     private ChannelFuture channelFuture;
@@ -23,25 +31,7 @@ public class HttpServerUnitTest {
     private Channel channel;
 
     @Mock
-    private HttpServer.ServerBootstrapProvider serverBootstrapProvider;
-
-    @Mock
-    private ServerBootstrap serverBootstrap;
-
-    @Mock
-    private HttpServer.EventLoopGroupProvider eventLoopGroupProvider;
-
-    @Mock
-    private EventLoopGroup workerEventLoopGroup;
-
-    @Mock
-    private EventLoopGroup bossEventLoopGroup;
-
-    @Mock
     private HttpServerChannelInitializer httpServerChannelInitializer;
-
-    @Mock
-    private LoggingHandler loggingHandler;
 
     private AutoCloseable mocks;
 
@@ -57,37 +47,18 @@ public class HttpServerUnitTest {
 
     @Test
     public void startAndStopServer() throws InterruptedException {
-        /* TODO
-        doReturn(bossEventLoopGroup).when(eventLoopGroupProvider).get(1);
-        doReturn(workerEventLoopGroup).when(eventLoopGroupProvider).get();
-        doReturn(serverBootstrap).when(serverBootstrapProvider).get();
-        doReturn(serverBootstrap).when(serverBootstrap).group(any(), any());
-        doReturn(serverBootstrap).when(serverBootstrap).channel(any());
         doReturn(channelFuture).when(serverBootstrap).bind(anyInt());
         doReturn(channelFuture).when(channelFuture).sync();
         doReturn(channel).when(channelFuture).channel();
         doReturn(channelFuture).when(channel).closeFuture();
-        doReturn(loggingHandler).when(loggingHandlerProvider).get();
         int port = 8080;
         new HttpServer(
-                handler,
-                eventLoopGroupProvider,
-                serverBootstrapProvider,
-                httpServerCodecProvider,
-                httpObjectAggregatorProvider,
-                loggingHandlerProvider
+                httpServerChannelInitializer,
+                serverBootstrap
         ).start(port);
-
-        verify(eventLoopGroupProvider).get();
-        verify(eventLoopGroupProvider).get(1);
-        verify(serverBootstrapProvider).get();
-        verify(serverBootstrap).bind(port);
-        verify(serverBootstrap).channel(any());
-        verify(serverBootstrap).group(any(), any());
-        verify(channelFuture, times(2)).sync();
-        verify(channel).closeFuture();
-        verify(serverBootstrap).childHandler(any());
-         */
+        ArgumentCaptor<Integer> portCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(serverBootstrap).bind(portCaptor.capture());
+        Assertions.assertEquals(port, portCaptor.getValue());
     }
 
 }

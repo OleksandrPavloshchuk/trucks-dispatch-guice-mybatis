@@ -2,6 +2,7 @@ package tutorial.trucksDispatchGuiceMybatis;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import io.netty.bootstrap.ServerBootstrap;
 import tutorial.trucksDispatchGuiceMybatis.http.server.HttpServer;
 import tutorial.trucksDispatchGuiceMybatis.http.server.HttpServerChannelInitializer;
 
@@ -12,8 +13,7 @@ public class Starter {
 
         new HttpServer(
                 injector.getInstance(HttpServerChannelInitializer.class),
-                new HttpServer.EventLoopGroupProvider(),
-                new HttpServer.ServerBootstrapProvider()
+                new ServerBootstrap()
         ).start(8080);
     }
 }
