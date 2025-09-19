@@ -98,5 +98,13 @@ public class ShipmentJsonDeserializerHandlerUnitTest {
                 () -> shipmentJsonDeserializeHandler.decode(channelHandlerContext, request, new ArrayList<>()));
     }
 
+    @Test
+    public void deserializeInvalidJson() throws Exception {
+        doReturn("application/json").when(headers).get(HttpHeaderNames.CONTENT_TYPE.toString());
+        doReturn("{\"one\":\"two\"}").when(byteBuf).toString(any());
+        Assertions.assertThrowsExactly( IllegalArgumentException.class,
+                () -> shipmentJsonDeserializeHandler.decode(channelHandlerContext, request, new ArrayList<>()));
+    }
+
 
 }

@@ -30,11 +30,12 @@ public abstract class JsonDeserializeHandler<T> extends MessageToMessageDecoder<
             final JsonNode jsonNode = objectMapper.readTree(request.content().toString(CharsetUtil.UTF_8));
             if (isJsonCorrect(jsonNode)) {
                 final T obj = objectMapper.convertValue(jsonNode, clazz);
-                out.add(obj);
-                return;
-            } else {
-                throw new IllegalArgumentException("Invalid JSON format");
+                if (obj != null) {
+                    out.add(obj);
+                    return;
+                }
             }
+            throw new IllegalArgumentException("Invalid JSON format");
         }
         out.add(request.retain());
     }

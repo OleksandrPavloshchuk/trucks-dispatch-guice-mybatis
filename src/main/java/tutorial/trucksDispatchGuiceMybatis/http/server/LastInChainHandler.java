@@ -20,10 +20,10 @@ public class LastInChainHandler extends ChannelInboundHandlerAdapter {
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
         LOG.error(cause.getMessage(), cause);
         HttpResponseStatus responseStatus;
-        if (cause instanceof DecoderException) {
-            responseStatus = HttpResponseStatus.BAD_REQUEST;
-        } else {
-            responseStatus = HttpResponseStatus.INTERNAL_SERVER_ERROR;
+        switch (cause) {
+            case DecoderException ignored -> responseStatus = HttpResponseStatus.BAD_REQUEST;
+            case IllegalArgumentException ignored -> responseStatus = HttpResponseStatus.BAD_REQUEST;
+            default -> responseStatus = HttpResponseStatus.INTERNAL_SERVER_ERROR;
         }
         final FullHttpResponse response = new DefaultFullHttpResponse(
                 HttpVersion.HTTP_1_1,
