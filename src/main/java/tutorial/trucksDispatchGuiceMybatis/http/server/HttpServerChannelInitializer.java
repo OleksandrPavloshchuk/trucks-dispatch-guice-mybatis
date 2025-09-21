@@ -7,30 +7,38 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
-import tutorial.trucksDispatchGuiceMybatis.http.endpoints.ShipmentEndpoint;
-import tutorial.trucksDispatchGuiceMybatis.http.endpoints.TruckEndpoint;
-import tutorial.trucksDispatchGuiceMybatis.http.json.ShipmentJsonDeserializeHandler;
-import tutorial.trucksDispatchGuiceMybatis.http.json.TruckJsonDeserializeHandler;
+import tutorial.trucksDispatchGuiceMybatis.http.channelLinks.internal.GetAssignmentsServiceAdapter;
+import tutorial.trucksDispatchGuiceMybatis.http.channelLinks.internal.ShipmentArrivedInputEventServiceWrapper;
+import tutorial.trucksDispatchGuiceMybatis.http.channelLinks.internal.TruckArrivedInputEventServiceWrapper;
+import tutorial.trucksDispatchGuiceMybatis.http.channelLinks.in.json.ShipmentJsonReader;
+import tutorial.trucksDispatchGuiceMybatis.http.channelLinks.in.json.TruckJsonReader;
+import tutorial.trucksDispatchGuiceMybatis.http.channelLinks.out.JsonWriter;
 
 @Singleton
 public class HttpServerChannelInitializer extends ChannelInitializer<SocketChannel> {
 
-    private final ShipmentEndpoint shipmentEndpoint;
-    private final TruckEndpoint truckEndpoint;
-    private final ShipmentJsonDeserializeHandler shipmentJsonDeserializeHandler;
-    private final TruckJsonDeserializeHandler truckJsonDeserializeHandler;
+    private final ShipmentArrivedInputEventServiceWrapper shipmentArrivedInputEventService;
+    private final TruckArrivedInputEventServiceWrapper truckArrivedInputEventService;
+    private final GetAssignmentsServiceAdapter getAssignmentsServiceAdapter;
+    private final JsonWriter jsonWriter;
+    private final ShipmentJsonReader shipmentJsonReader;
+    private final TruckJsonReader truckJsonReader;
 
     @Inject
     public HttpServerChannelInitializer(
-            ShipmentEndpoint shipmentEndpoint,
-            TruckEndpoint truckEndpoint,
-            ShipmentJsonDeserializeHandler shipmentJsonDeserializeHandler,
-            TruckJsonDeserializeHandler truckJsonDeserializeHandler
+            ShipmentArrivedInputEventServiceWrapper shipmentArrivedInputEventService,
+            TruckArrivedInputEventServiceWrapper truckArrivedInputEventService,
+            GetAssignmentsServiceAdapter getAssignmentsServiceAdapter,
+            JsonWriter jsonWriter,
+            ShipmentJsonReader shipmentJsonReader,
+            TruckJsonReader truckJsonReader
     ) {
-        this.shipmentEndpoint = shipmentEndpoint;
-        this.truckEndpoint = truckEndpoint;
-        this.shipmentJsonDeserializeHandler = shipmentJsonDeserializeHandler;
-        this.truckJsonDeserializeHandler = truckJsonDeserializeHandler;
+        this.shipmentArrivedInputEventService = shipmentArrivedInputEventService;
+        this.truckArrivedInputEventService = truckArrivedInputEventService;
+        this.getAssignmentsServiceAdapter = getAssignmentsServiceAdapter;
+        this.jsonWriter = jsonWriter;
+        this.shipmentJsonReader = shipmentJsonReader;
+        this.truckJsonReader = truckJsonReader;
     }
 
     @Override
@@ -39,10 +47,12 @@ public class HttpServerChannelInitializer extends ChannelInitializer<SocketChann
         pipeline.addLast("httpServerCodec", new HttpServerCodec());
         pipeline.addLast("httpObjectAggregator", new HttpObjectAggregator(65536));
         pipeline.addLast("loggingHandler", new LoggingHandler());
-        pipeline.addLast("shipmentDeserializer", shipmentJsonDeserializeHandler);
-        pipeline.addLast("truckDeserializer", truckJsonDeserializeHandler);
-        pipeline.addLast("shipmentEndpoint", shipmentEndpoint);
-        pipeline.addLast("truckEndpoint", truckEndpoint);
+        pipeline.addLast("shipmentJsonReader", shipmentJsonReader);
+        pipeline.addLast("truckJsonReader", truckJsonReader);
+        pipeline.addLast("shipmentArrivedInputEventService", shipmentArrivedInputEventService);
+        pipeline.addLast("truckArrivedInputEventService", truckArrivedInputEventService);
+        pipeline.addLast("getAssignmentsService", getAssignmentsServiceAdapter);
+        pipeline.addLast("jsonWriter", jsonWriter);
         pipeline.addLast("end", new LastInChainHandler());
     }
 }

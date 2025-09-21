@@ -7,8 +7,8 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import tutorial.trucksDispatchGuiceMybatis.domain.Assignment;
 import tutorial.trucksDispatchGuiceMybatis.domain.Shipment;
 import tutorial.trucksDispatchGuiceMybatis.domain.Truck;
-import tutorial.trucksDispatchGuiceMybatis.services.events.out.AssignmentCreatedOutputEvent;
-import tutorial.trucksDispatchGuiceMybatis.services.events.out.OutputEvent;
+import tutorial.trucksDispatchGuiceMybatis.events.out.AssignmentCreatedOutputEvent;
+import tutorial.trucksDispatchGuiceMybatis.events.out.OutputEvent;
 
 import java.util.Map;
 import java.util.Optional;

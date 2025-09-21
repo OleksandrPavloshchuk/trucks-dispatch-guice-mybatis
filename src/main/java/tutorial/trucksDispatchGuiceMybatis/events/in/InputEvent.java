@@ -1,4 +1,4 @@
-package tutorial.trucksDispatchGuiceMybatis.services.events.in;
+package tutorial.trucksDispatchGuiceMybatis.events.in;
 
 public sealed interface InputEvent permits TruckArrivedInputEvent, ShipmentArrivedInputEvent {
 }

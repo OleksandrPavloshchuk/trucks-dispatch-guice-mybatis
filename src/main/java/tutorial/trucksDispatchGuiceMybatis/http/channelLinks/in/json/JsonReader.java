@@ -1,4 +1,4 @@
-package tutorial.trucksDispatchGuiceMybatis.http.json;
+package tutorial.trucksDispatchGuiceMybatis.http.channelLinks.in.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,14 +11,15 @@ import io.netty.util.CharsetUtil;
 
 import java.util.List;
 
-public abstract class JsonDeserializeHandler<T> extends MessageToMessageDecoder<FullHttpRequest> {
+public abstract class JsonReader<T> extends MessageToMessageDecoder<FullHttpRequest> {
 
     private final ObjectMapper objectMapper;
     private final Class<T> clazz;
 
+    protected abstract boolean matches(FullHttpRequest request);
     protected abstract boolean isJsonCorrect(JsonNode jsonNode);
 
-    public JsonDeserializeHandler(Class<T> clazz, ObjectMapper objectMapper) {
+    public JsonReader(Class<T> clazz, ObjectMapper objectMapper) {
         objectMapper.registerModule(new ParameterNamesModule());
         this.clazz = clazz;
         this.objectMapper = objectMapper;
@@ -26,7 +27,7 @@ public abstract class JsonDeserializeHandler<T> extends MessageToMessageDecoder<
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, FullHttpRequest request, List<Object> out) throws Exception {
-        if (isJsonInput(request)) {
+        if (matches(request) && isJsonInput(request)) {
             final JsonNode jsonNode = objectMapper.readTree(request.content().toString(CharsetUtil.UTF_8));
             if (isJsonCorrect(jsonNode)) {
                 final T obj = objectMapper.convertValue(jsonNode, clazz);
@@ -41,10 +42,8 @@ public abstract class JsonDeserializeHandler<T> extends MessageToMessageDecoder<
     }
 
     private boolean isJsonInput(FullHttpRequest request) {
-        return request
-                .headers()
-                .get(HttpHeaderNames.CONTENT_TYPE.toString())
-                .startsWith("application/json");
+        final String contentType = request.headers().get(HttpHeaderNames.CONTENT_TYPE);
+        return contentType != null && contentType.startsWith("application/json");
     }
 
 }

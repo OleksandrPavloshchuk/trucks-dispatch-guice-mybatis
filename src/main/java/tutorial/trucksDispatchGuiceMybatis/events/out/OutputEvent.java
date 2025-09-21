@@ -1,4 +1,4 @@
-package tutorial.trucksDispatchGuiceMybatis.services.events.out;
+package tutorial.trucksDispatchGuiceMybatis.events.out;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

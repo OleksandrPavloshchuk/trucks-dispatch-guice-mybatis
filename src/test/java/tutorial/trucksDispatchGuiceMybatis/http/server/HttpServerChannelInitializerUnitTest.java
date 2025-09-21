@@ -11,10 +11,8 @@ import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import tutorial.trucksDispatchGuiceMybatis.http.endpoints.ShipmentEndpoint;
-import tutorial.trucksDispatchGuiceMybatis.http.endpoints.TruckEndpoint;
-import tutorial.trucksDispatchGuiceMybatis.http.json.ShipmentJsonDeserializeHandler;
-import tutorial.trucksDispatchGuiceMybatis.http.json.TruckJsonDeserializeHandler;
+import tutorial.trucksDispatchGuiceMybatis.http.channelLinks.in.json.ShipmentJsonReader;
+import tutorial.trucksDispatchGuiceMybatis.http.channelLinks.in.json.TruckJsonReader;
 
 import static org.mockito.Mockito.*;
 
@@ -25,13 +23,17 @@ public class HttpServerChannelInitializerUnitTest {
     @Mock
     private ChannelPipeline channelPipeline;
     @Mock
-    private ShipmentEndpoint shipmentEndpoint;
+    private ShipmentDistributorJsonWriter shipmentEndpoint;
     @Mock
-    private TruckEndpoint truckEndpoint;
+    private TruckDistributorJsonWriter truckEndpoint;
     @Mock
-    private ShipmentJsonDeserializeHandler shipmentJsonDeserializeHandler;
+    private ShipmentJsonReader shipmentJsonDeserializeHandler;
     @Mock
-    private TruckJsonDeserializeHandler truckJsonDeserializeHandler;
+    private TruckJsonReader truckJsonDeserializeHandler;
+    @Mock
+    private AssignmentsRetriever assignmentsRetriever;
+    @Mock
+    private ListJsonWriter listEndpoint;
 
     @InjectMocks
     private HttpServerChannelInitializer httpServerChannelInitializer;
@@ -68,6 +70,10 @@ public class HttpServerChannelInitializerUnitTest {
                 .addLast(eq("shipmentEndpoint"), eq(shipmentEndpoint));
         inOrder.verify(channelPipeline)
                 .addLast(eq("truckEndpoint"), eq(truckEndpoint));
+        inOrder.verify(channelPipeline)
+                .addLast(eq("assignmentsRetrieverEndpoint"), eq(assignmentsRetriever));
+        inOrder.verify(channelPipeline)
+                .addLast(eq("listEndpoint"), eq(listEndpoint));
         inOrder.verify(channelPipeline)
                 .addLast(eq("end"), any(LastInChainHandler.class));
     }
