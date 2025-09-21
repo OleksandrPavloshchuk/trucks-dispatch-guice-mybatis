@@ -10,11 +10,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import tutorial.trucksDispatchGuiceMybatis.domain.Assignment;
 import tutorial.trucksDispatchGuiceMybatis.domain.Shipment;
 import tutorial.trucksDispatchGuiceMybatis.domain.Truck;
 import tutorial.trucksDispatchGuiceMybatis.events.out.AssignmentCreatedOutputEvent;
 import tutorial.trucksDispatchGuiceMybatis.events.out.OutputEvent;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -98,6 +100,26 @@ public class DistributionRepositoryImplUnitTest {
         final AssignmentCreatedOutputEvent actual = (AssignmentCreatedOutputEvent) actualRaw;
         Assertions.assertEquals(shipment, actual.assignment().shipment());
         Assertions.assertEquals(truck, actual.assignment().truck());
+    }
+
+    @Test
+    public void getAssignments() {
+        final List<Map<String, Object>> map = List.of(
+                Map.of("truck_name", "1", "shipment_name", "2", "capacity", 3.0, "weight", 4.0)
+        );
+        doReturn(map).when(sqlSession).selectList(any(), any());
+        final List<Assignment> actual = distributionRepository.getAssignments();
+        final ArgumentCaptor<String> sqlIdCaptor = ArgumentCaptor.forClass(String.class);
+        verify(sqlSessionFactory).openSession();
+        verify(sqlSession).selectList(sqlIdCaptor.capture(), any());
+        Assertions.assertEquals("tutorial.trucksDispatchGuiceMybatis.repositories.DistributionRepositoryImpl.getAssignments",
+                sqlIdCaptor.getValue());
+        Assertions.assertEquals(List.of(
+                new Assignment(
+                        new Truck("1", 3.0),
+                        new Shipment("2", 4.0)
+                )
+        ), actual);
     }
 
     private void assertInsertCalled(String expectedSqlId, Object expectedParam) {
