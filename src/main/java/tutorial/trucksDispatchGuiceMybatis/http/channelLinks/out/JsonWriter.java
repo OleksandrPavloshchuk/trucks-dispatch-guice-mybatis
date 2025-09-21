@@ -8,7 +8,7 @@ import io.netty.channel.ChannelHandlerContext;
 
 @Singleton
 @ChannelHandler.Sharable
-public class JsonWriter extends Writer<Object> {
+public class JsonWriter extends Writer {
 
     private final ObjectMapper objectMapper;
 

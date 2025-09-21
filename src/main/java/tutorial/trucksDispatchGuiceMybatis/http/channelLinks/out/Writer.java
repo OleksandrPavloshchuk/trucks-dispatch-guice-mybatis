@@ -7,11 +7,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
 
-public abstract class Writer<T> extends SimpleChannelInboundHandler<T> {
-
-    protected void returnText(ChannelHandlerContext ctx, String str) {
-        returnText(ctx, str, "text/plain; charset=UTF-8");
-    }
+public abstract class Writer extends SimpleChannelInboundHandler<Object> {
 
     protected void returnText(ChannelHandlerContext ctx, String str, String contentType) {
         final FullHttpResponse response = new DefaultFullHttpResponse(

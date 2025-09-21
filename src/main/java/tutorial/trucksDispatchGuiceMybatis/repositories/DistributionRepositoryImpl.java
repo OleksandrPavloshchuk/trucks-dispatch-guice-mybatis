@@ -82,11 +82,11 @@ public class DistributionRepositoryImpl implements DistributionRepository {
     private <T> List<T> selectList(
             String sqlId,
             Map<String, Object> params,
-            Function<Map<String, Object>, T> mapper) {
+            Function<Map<String, Object>, T> rowMapper) {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             final List<Map<String, Object>> mapList = session.selectList(MAPPER_NAMESPACE + "." + sqlId, params);
             return mapList.stream()
-                    .map(mapper)
+                    .map(rowMapper)
                     .toList();
         }
     }

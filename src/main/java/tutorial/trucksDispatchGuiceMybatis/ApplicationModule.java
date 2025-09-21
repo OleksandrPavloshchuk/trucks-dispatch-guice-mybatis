@@ -30,7 +30,7 @@ public class ApplicationModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public ObjectMapper objectMapper() {
+    public ObjectMapper providesObjectMapper() {
         final ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new ParameterNamesModule());
         return mapper;

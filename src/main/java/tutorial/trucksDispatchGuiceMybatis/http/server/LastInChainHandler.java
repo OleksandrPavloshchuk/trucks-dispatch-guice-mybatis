@@ -5,7 +5,6 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
@@ -21,7 +20,6 @@ public class LastInChainHandler extends ChannelInboundHandlerAdapter {
         LOG.error(cause.getMessage(), cause);
         HttpResponseStatus responseStatus;
         switch (cause) {
-            case DecoderException ignored -> responseStatus = HttpResponseStatus.BAD_REQUEST;
             case IllegalArgumentException ignored -> responseStatus = HttpResponseStatus.BAD_REQUEST;
             default -> responseStatus = HttpResponseStatus.INTERNAL_SERVER_ERROR;
         }

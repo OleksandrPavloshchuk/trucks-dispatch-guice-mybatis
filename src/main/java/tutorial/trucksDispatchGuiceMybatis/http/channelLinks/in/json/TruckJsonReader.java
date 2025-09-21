@@ -20,6 +20,10 @@ public class TruckJsonReader extends JsonReader<TruckArrivedInputEvent> {
 
     @Override
     protected boolean matches(FullHttpRequest request) {
+
+        String uri = request.uri();
+        HttpMethod httpMethod = request.method();
+
         return request.method()== HttpMethod.POST && "/trucks".equals(request.uri());
     }
 
