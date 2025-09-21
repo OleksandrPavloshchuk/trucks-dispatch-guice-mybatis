@@ -24,11 +24,10 @@ public class GetAssignmentsServiceAdapter
     }
 
     @Override
-    protected void decode(ChannelHandlerContext channelHandlerContext, FullHttpRequest request, List<Object> out) throws Exception {
-        if (request.method() == HttpMethod.GET && "/assignments".equals(request.uri())) {
-            out.add(service.get());
-        } else {
-            out.add(request.retain());
-        }
+    protected void decode(ChannelHandlerContext channelHandlerContext, FullHttpRequest request, List<Object> out) {
+        final Object result = (request.method() == HttpMethod.GET && "/assignments".equals(request.uri()))
+                ? service.get()
+                : request.retain();
+        out.add(result);
     }
 }

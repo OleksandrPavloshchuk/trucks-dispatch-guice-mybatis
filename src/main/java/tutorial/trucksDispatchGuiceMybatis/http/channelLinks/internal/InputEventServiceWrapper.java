@@ -3,16 +3,15 @@ package tutorial.trucksDispatchGuiceMybatis.http.channelLinks.internal;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import tutorial.trucksDispatchGuiceMybatis.events.in.InputEvent;
-import tutorial.trucksDispatchGuiceMybatis.events.out.OutputEvent;
+import tutorial.trucksDispatchGuiceMybatis.services.InputEventService;
 
 import java.util.List;
-import java.util.function.Function;
 
 public class InputEventServiceWrapper<T extends InputEvent> extends MessageToMessageDecoder<T> {
 
-    private final Function<T, OutputEvent> service;
+    private final InputEventService<T> service;
 
-    public InputEventServiceWrapper(Function<T, OutputEvent> service) {
+    public InputEventServiceWrapper(InputEventService<T> service) {
         this.service = service;
     }
 

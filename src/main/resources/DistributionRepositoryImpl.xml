@@ -57,5 +57,14 @@
         ]]>
     </select>
 
+    <select id="getAssignments" resultType="map">
+        <![CDATA[
+        SELECT truck_name, capacity, shipment_name, weight
+        FROM assignments a
+        INNER JOIN trucks t ON a.truck_name=t.name
+        INNER JOIN shipments s ON a.shipment_name=s.name
+        ]]>
+    </select>
+
 
 </mapper>

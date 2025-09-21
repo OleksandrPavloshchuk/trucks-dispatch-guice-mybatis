@@ -11,7 +11,7 @@ import tutorial.trucksDispatchGuiceMybatis.events.out.TruckWaitsOutputEvent;
 import tutorial.trucksDispatchGuiceMybatis.repositories.DistributionRepository;
 
 @Singleton
-public class TruckArrivedInputEventService {
+public class TruckArrivedInputEventService implements InputEventService<TruckArrivedInputEvent> {
 
     private static final Logger LOG = LoggerFactory.getLogger(TruckArrivedInputEventService.class);
     private static final OutputEvent TRUCK_WAITS = new TruckWaitsOutputEvent();
@@ -23,6 +23,7 @@ public class TruckArrivedInputEventService {
         this.distributionRepository = distributionRepository;
     }
 
+    @Override
     public OutputEvent apply(TruckArrivedInputEvent event) {
         LOG.info("onTruckArrived(event={})", event);
         final Truck truck = event.truck();
