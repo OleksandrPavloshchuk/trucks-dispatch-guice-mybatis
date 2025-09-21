@@ -13,6 +13,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import tutorial.trucksDispatchGuiceMybatis.http.channelLinks.in.json.ShipmentJsonReader;
 import tutorial.trucksDispatchGuiceMybatis.http.channelLinks.in.json.TruckJsonReader;
+import tutorial.trucksDispatchGuiceMybatis.http.channelLinks.internal.GetAssignmentsServiceAdapter;
+import tutorial.trucksDispatchGuiceMybatis.http.channelLinks.internal.ShipmentArrivedInputEventServiceWrapper;
+import tutorial.trucksDispatchGuiceMybatis.http.channelLinks.internal.TruckArrivedInputEventServiceWrapper;
+import tutorial.trucksDispatchGuiceMybatis.http.channelLinks.out.JsonWriter;
 
 import static org.mockito.Mockito.*;
 
@@ -23,17 +27,17 @@ public class HttpServerChannelInitializerUnitTest {
     @Mock
     private ChannelPipeline channelPipeline;
     @Mock
-    private ShipmentDistributorJsonWriter shipmentEndpoint;
+    private ShipmentJsonReader shipmentJsonReader;
     @Mock
-    private TruckDistributorJsonWriter truckEndpoint;
+    private TruckJsonReader truckJsonReader;
     @Mock
-    private ShipmentJsonReader shipmentJsonDeserializeHandler;
+    private ShipmentArrivedInputEventServiceWrapper shipmentArrivedInputEventService;
     @Mock
-    private TruckJsonReader truckJsonDeserializeHandler;
+    private TruckArrivedInputEventServiceWrapper truckArrivedInputEventService;
     @Mock
-    private AssignmentsRetriever assignmentsRetriever;
+    private GetAssignmentsServiceAdapter getAssignmentsServiceAdapter;
     @Mock
-    private ListJsonWriter listEndpoint;
+    private JsonWriter jsonWriter;
 
     @InjectMocks
     private HttpServerChannelInitializer httpServerChannelInitializer;
@@ -63,19 +67,20 @@ public class HttpServerChannelInitializerUnitTest {
         inOrder.verify(channelPipeline)
                 .addLast(eq("loggingHandler"), any(LoggingHandler.class));
         inOrder.verify(channelPipeline)
-                .addLast(eq("shipmentDeserializer"), eq(shipmentJsonDeserializeHandler));
+                .addLast(eq("shipmentJsonReader"), eq(shipmentJsonReader));
         inOrder.verify(channelPipeline)
-                .addLast(eq("truckDeserializer"), eq(truckJsonDeserializeHandler));
+                .addLast(eq("truckJsonReader"), eq(truckJsonReader));
         inOrder.verify(channelPipeline)
-                .addLast(eq("shipmentEndpoint"), eq(shipmentEndpoint));
+                .addLast(eq("shipmentArrivedInputEventService"), eq(shipmentArrivedInputEventService));
         inOrder.verify(channelPipeline)
-                .addLast(eq("truckEndpoint"), eq(truckEndpoint));
+                .addLast(eq("truckArrivedInputEventService"), eq(truckArrivedInputEventService));
         inOrder.verify(channelPipeline)
-                .addLast(eq("assignmentsRetrieverEndpoint"), eq(assignmentsRetriever));
+                .addLast(eq("getAssignmentsService"), eq(getAssignmentsServiceAdapter));
         inOrder.verify(channelPipeline)
-                .addLast(eq("listEndpoint"), eq(listEndpoint));
+                .addLast(eq("jsonWriter"), eq(jsonWriter));
         inOrder.verify(channelPipeline)
                 .addLast(eq("end"), any(LastInChainHandler.class));
+
     }
 
 }
