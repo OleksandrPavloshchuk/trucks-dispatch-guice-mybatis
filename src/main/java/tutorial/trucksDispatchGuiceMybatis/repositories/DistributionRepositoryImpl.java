@@ -61,9 +61,10 @@ public class DistributionRepositoryImpl implements DistributionRepository {
     public List<Assignment> getAssignments() {
         return selectList("getAssignments", Map.of(),
                 (row) -> new Assignment(
-                        new Truck((String) row.get("truck_name"), (Double) row.get("capacity")),
-                        new Shipment((String) row.get("shipment_name"), (Double) row.get("weight"))
-                ));
+                        new Truck((String) row.get("truck_name"), safeDouble(row.get("capacity"))),
+                        new Shipment((String) row.get("shipment_name"), safeDouble(row.get("weight")))
+                )
+        );
     }
 
     private <T> void insert(String sqlId, T obj) {
@@ -88,6 +89,10 @@ public class DistributionRepositoryImpl implements DistributionRepository {
                     .map(mapper)
                     .toList();
         }
+    }
+
+    private static double safeDouble(Object value) {
+        return ((Number) value).doubleValue();
     }
 
 }

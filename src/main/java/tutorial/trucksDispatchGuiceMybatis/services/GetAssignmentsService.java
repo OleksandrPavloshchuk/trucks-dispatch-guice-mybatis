@@ -22,6 +22,7 @@ public class GetAssignmentsService {
     }
 
     public List<Assignment> get() {
+        LOG.info("Getting assignments");
         return distributionRepository.getAssignments();
     }
 }
