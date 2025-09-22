@@ -16,7 +16,6 @@ import org.mockito.Spy;
 import tutorial.trucksDispatchGuiceMybatis.domain.Assignment;
 import tutorial.trucksDispatchGuiceMybatis.domain.Shipment;
 import tutorial.trucksDispatchGuiceMybatis.domain.Truck;
-import tutorial.trucksDispatchGuiceMybatis.http.channelLinks.in.json.TruckJsonReader;
 import tutorial.trucksDispatchGuiceMybatis.services.GetAssignmentsService;
 
 import java.util.ArrayList;
