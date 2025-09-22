@@ -38,6 +38,8 @@ public class HttpServerChannelInitializerUnitTest {
     private GetAssignmentsServiceAdapter getAssignmentsServiceAdapter;
     @Mock
     private JsonWriter jsonWriter;
+    @Mock
+    private LoggingHandler loggingHandler;
 
     @InjectMocks
     private HttpServerChannelInitializer httpServerChannelInitializer;
@@ -65,7 +67,7 @@ public class HttpServerChannelInitializerUnitTest {
         inOrder.verify(channelPipeline)
                 .addLast(eq("httpObjectAggregator"), any(HttpObjectAggregator.class));
         inOrder.verify(channelPipeline)
-                .addLast(eq("loggingHandler"), any(LoggingHandler.class));
+                .addLast(eq("loggingHandler"), eq(loggingHandler));
         inOrder.verify(channelPipeline)
                 .addLast(eq("shipmentJsonReader"), eq(shipmentJsonReader));
         inOrder.verify(channelPipeline)

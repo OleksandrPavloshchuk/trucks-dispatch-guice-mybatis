@@ -23,6 +23,7 @@ public class HttpServerChannelInitializer extends ChannelInitializer<SocketChann
     private final JsonWriter jsonWriter;
     private final ShipmentJsonReader shipmentJsonReader;
     private final TruckJsonReader truckJsonReader;
+    private final LoggingHandler loggingHandler;
 
     @Inject
     public HttpServerChannelInitializer(
@@ -31,7 +32,8 @@ public class HttpServerChannelInitializer extends ChannelInitializer<SocketChann
             GetAssignmentsServiceAdapter getAssignmentsServiceAdapter,
             JsonWriter jsonWriter,
             ShipmentJsonReader shipmentJsonReader,
-            TruckJsonReader truckJsonReader
+            TruckJsonReader truckJsonReader,
+            LoggingHandler loggingHandler
     ) {
         this.shipmentArrivedInputEventService = shipmentArrivedInputEventService;
         this.truckArrivedInputEventService = truckArrivedInputEventService;
@@ -39,6 +41,7 @@ public class HttpServerChannelInitializer extends ChannelInitializer<SocketChann
         this.jsonWriter = jsonWriter;
         this.shipmentJsonReader = shipmentJsonReader;
         this.truckJsonReader = truckJsonReader;
+        this.loggingHandler = loggingHandler;
     }
 
     @Override
@@ -46,7 +49,7 @@ public class HttpServerChannelInitializer extends ChannelInitializer<SocketChann
         final ChannelPipeline pipeline = channel.pipeline();
         pipeline.addLast("httpServerCodec", new HttpServerCodec());
         pipeline.addLast("httpObjectAggregator", new HttpObjectAggregator(65536));
-        pipeline.addLast("loggingHandler", new LoggingHandler());
+        pipeline.addLast("loggingHandler", loggingHandler);
         pipeline.addLast("shipmentJsonReader", shipmentJsonReader);
         pipeline.addLast("truckJsonReader", truckJsonReader);
         pipeline.addLast("shipmentArrivedInputEventService", shipmentArrivedInputEventService);

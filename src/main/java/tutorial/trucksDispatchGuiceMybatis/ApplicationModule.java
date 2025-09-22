@@ -8,6 +8,8 @@ import com.google.inject.Singleton;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tutorial.trucksDispatchGuiceMybatis.repositories.DistributionRepository;
 import tutorial.trucksDispatchGuiceMybatis.repositories.DistributionRepositoryImpl;
 
@@ -34,5 +36,11 @@ public class ApplicationModule extends AbstractModule {
         final ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new ParameterNamesModule());
         return mapper;
+    }
+
+    @Provides
+    @Singleton
+    public Logger provideLogger() {
+        return LoggerFactory.getLogger("netty");
     }
 }
